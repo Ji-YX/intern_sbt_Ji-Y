@@ -1,25 +1,20 @@
-// SPDX-License-Identifier: Unlicense
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "hardhat/console.sol";
+// import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "erc721a/contracts/ERC721A.sol";
-//import "@openzeppelin/contracts/tokne/ERC721/ERC721.sol";
-//the proposed ERC721
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
 
-contract SharedNFT1 is ERC721A, Ownable {
+
+contract SharedNFT is ERC721A, Ownable, AccessControl {
     // Max batch size for minting one time
     uint256 private _maxBatchSize;
 
-    //NEW
-    uint256 public totalCopies;
-    mapping(address => bool) public hasCopies;
-    //end
 
-    //NEW2
-    mapping (uint256 => address) private _owners;
-
+    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
     // Mapping from token Id to hashed credential ID
     mapping(uint256 => string) private _ownedCredential;
@@ -27,38 +22,39 @@ contract SharedNFT1 is ERC721A, Ownable {
     // Mapping from hashed credential Id to owner possession flag
     mapping(string => mapping(address => bool)) private _credentialOwnerships;
 
-    //NEW
+
     constructor(
-        string memory _name,
-        string memory _symbol,
-        uint256 _totalCopies
-    ) ERC721A(_name, _symbol) {
-        totalCopies = _totalCopies;
+      string memory _name,
+      string memory _symbol,
+      uint256 _newMaxBatchSize
+      ) ERC721A(_name, _symbol) {
+        _maxBatchSize = _newMaxBatchSize;
+        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        _setupRole(MINTER_ROLE, msg.sender);
     }
-    //end
 
-    // constructor(
-    //     string memory _name,
-    //     string memory _symbol,
-    //     uint256 _newMaxBatchSize
-    // ) ERC721A(_name, _symbol) {
-    //     _maxBatchSize = _newMaxBatchSize;
-    // }
+    
+    //Grant only those who have more than 1 NFT can be MINTER_ROLE
+    function grantMinterRole() public {
+        uint256 balance = balanceOf(msg.sender);
+        require(balance >= 1, "Only accounts with at least one NFT can be granted MINTER_ROLE");
+        grantRole(MINTER_ROLE, msg.sender);
+    }
 
-    /*課題
-
-    OnlyOwnerをスマコンを持っている人もコントラクトを呼び出せるようにする。
-
+    /*
+    function mint(address to, address from) public onlyRole(MINTER_ROLE) {
+        require(from == owner(), "Only the NFT owner can mint new NFTs");
+        _tokenIds.increment();
+        uint256 newTokenId = _tokenIds.current();
+        _mint(to, newTokenId);
+    }
     */
-    function splitNFT() public {
-        require(!hasCopies[msg.sender], "You already have a copy of this NFT");
-        require(totalCopies > 0, "No more copies left to split");
 
-        totalCopies -= 1;
-        uint256 tokenId = totalSupply() + 1;
-        _mint(msg.sender, tokenId);
-        hasCopies[msg.sender] = true;
+    modifier onlyMinter() {
+        require(hasRole(MINTER_ROLE, msg.sender), "Caller is not a MINTER");
+        _;
     }
+
 
     function mintAndTransfer(
         string memory _credentialId,
@@ -66,7 +62,7 @@ contract SharedNFT1 is ERC721A, Ownable {
         address[] memory _toAddresses,
         string[] memory _imageURIs,
         string[] memory _externalURIs
-    ) public onlyOwner {
+    ) public onlyMinter {
         uint256 requestNum = _toAddresses.length;
         require(requestNum > 0, "The _toAddresses is empty.");
         require(
@@ -111,6 +107,7 @@ contract SharedNFT1 is ERC721A, Ownable {
         }
     }
 
+    //from https://github.com/takagi-sh/intern_sbt/blob/main/subfolder_tmp/contracts/NFTCredential.sol#L150
     function transferFrom(
         address from,
         address to,
