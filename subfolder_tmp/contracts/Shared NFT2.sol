@@ -9,15 +9,54 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 
 
 contract SharedNFT2 is ERC721A, Ownable, AccessControl {
+    // Max batch size for minting one time
+    uint256 private _maxBatchSize;
+
+
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
+    // Mapping from token Id to hashed credential ID
+    mapping(uint256 => string) private _ownedCredential;
+
+    // Mapping from hashed credential Id to owner possession flag
+    mapping(string => mapping(address => bool)) private _credentialOwnerships;
+
+
     constructor(
-      string memory name,
-      string memory symbol
-      ) ERC721A(name, symbol) {
+      string memory _name,
+      string memory _symbol,
+      uint256 _newMaxBatchSize
+      ) ERC721A(_name, _symbol) {
+        _maxBatchSize = _newMaxBatchSize;
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _setupRole(MINTER_ROLE, msg.sender);
     }
+
+    
+    //Grant only those who have more than 1 NFT can be MINTER_ROLE
+    function grantMinterRole() public {
+        uint256 balance = balanceOf(msg.sender);
+        require(balance >= 1, "Only accounts with at least one NFT can be granted MINTER_ROLE");
+        grantRole(MINTER_ROLE, msg.sender);
+    }
+
+    function mint(address to, address from) public onlyRole(MINTER_ROLE) {
+        require(from == owner(), "Only the NFT owner can mint new NFTs");
+        _tokenIds.increment();
+        uint256 newTokenId = _tokenIds.current();
+        _mint(to, newTokenId);
+    }
+
+
+
+    //Define who have the access to the 
+    // function grantMinterRole(address account) public onlyRole(DEFAULT_ADMIN_ROLE) {
+    //     grantRole(MINTER_ROLE, account);
+    // }
+
+    // function revokeMinterRole(address account) public onlyRole(DEFAULT_ADMIN_ROLE) {
+    //     revokeRole(MINTER_ROLE, account);
+    // }    
 
     //MAIN PART
     //Ascending Order of mint
