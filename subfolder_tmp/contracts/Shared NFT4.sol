@@ -205,6 +205,21 @@ contract SharedNFT is ERC721A, Ownable, AccessControl {
         super.transferOwnership(newOwner);
     }
 
+    // function getMintedBy(uint256 _tokenId) 
+    //     public 
+    //     view 
+    //     returns (address) 
+    // {
+    //     require(_exists(_tokenId), "Token does not exist.");
+    //     return _tokenMinters[_tokenId];
+    // }
+
+    function getMintedBy(uint256 _tokenId) public view returns (address) {
+        require(_exists(_tokenId), "Token does not exist");
+        TokenData memory tokenData = mintedTokens[_tokenId];
+        return tokenData.mintedBy;
+    }
+
     // To be soulbound NFT except owner operations.
     function _beforeTokenTransfers(
         address,
