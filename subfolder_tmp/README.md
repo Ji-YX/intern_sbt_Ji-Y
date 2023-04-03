@@ -1,3 +1,14 @@
+# ブランチの説明
+
+こちらのブランチ`2023-04-03-full`は、いくつかのバージョンのスマコンを全て残した完全版です。
+
+`Shared NFT4.sol`は、最新版
+<br>`Shared NFT3.sol`は、スマコンオーナーと、NFTのホルダーのみがミント可能なスマコン（誰がそのtokenIdのNFTをミントしたかは区別されない）
+<br>`Shared NFT _GPT1.sol`は、GPTが生成した答えをそのまま写したもの
+<br>`NFTCredential_original.sol`は、フォーク元のブランチと同じスマコン
+<br>`NFTCredential_comment.sol`は、フォーク元のブランチと同じスマコンだが、自分なりに説明をつけたもの
+<br>`SharedNFT.sol`, `SharedNFT2.sol`は複数アカウントが同一ユーザーであることを示すスマコンの古いバージョン
+
 # nft-vc
 
 ## Setup
