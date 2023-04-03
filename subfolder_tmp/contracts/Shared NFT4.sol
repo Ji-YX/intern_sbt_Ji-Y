@@ -8,13 +8,32 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
 
-
+//ミントした人によって、識別されるような NFTを作って、
 contract SharedNFT is ERC721A, Ownable, AccessControl {
+
+    //new
+    using Counters for Counters.Counter;
+    Counters.Counter private _tokenIds;
+    //end of new
+
+
+
     // Max batch size for minting one time
     uint256 private _maxBatchSize;
 
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+
+
+    //new
+    struct TokenData {
+        address owner;
+        address mintedBy;
+    }
+
+    mapping(uint256 => TokenData) private mintedTokens;
+    //end of new
+
 
     // Mapping from token Id to hashed credential ID
     mapping(uint256 => string) private _ownedCredential;
@@ -61,7 +80,8 @@ contract SharedNFT is ERC721A, Ownable, AccessControl {
         string memory _description,
         address[] memory _toAddresses,
         string[] memory _imageURIs,
-        string[] memory _externalURIs
+        string[] memory _externalURIs,
+        address _mintedBy
     ) public onlyMinter {
         uint256 requestNum = _toAddresses.length;
         require(requestNum > 0, "The _toAddresses is empty.");
@@ -96,6 +116,12 @@ contract SharedNFT is ERC721A, Ownable, AccessControl {
         for (uint i = 0; i < requestNum; i++) {
             // update the credential ID mapping
             _ownedCredential[tokenId] = _credentialId;
+
+            //NEW
+            mintedTokens[tokenId] = TokenData({
+                owner: _toAddresses[i],
+                mintedBy : _mintedBy
+            });
             // transfer to the specified address
             safeTransferFrom(owner(), _toAddresses[i], tokenId);
             // update the token URI
@@ -177,6 +203,21 @@ contract SharedNFT is ERC721A, Ownable, AccessControl {
         // because to make sure that the status of credential ID mappings will not be complicated.
         require(balanceOf(newOwner) == 0, "newOwner's balance must be zero.");
         super.transferOwnership(newOwner);
+    }
+
+    // function getMintedBy(uint256 _tokenId) 
+    //     public 
+    //     view 
+    //     returns (address) 
+    // {
+    //     require(_exists(_tokenId), "Token does not exist.");
+    //     return _tokenMinters[_tokenId];
+    // }
+
+    function getMintedBy(uint256 _tokenId) public view returns (address) {
+        require(_exists(_tokenId), "Token does not exist");
+        TokenData memory tokenData = mintedTokens[_tokenId];
+        return tokenData.mintedBy;
     }
 
     // To be soulbound NFT except owner operations.
