@@ -11,6 +11,11 @@ import "@openzeppelin/contracts/utils/Base64.sol";
 //ミントした人によって、識別されるような NFTを作って、
 contract SharedNFT is ERC721A, Ownable, AccessControl {
 
+    //SUPPORTSINTERFACE IS defined in both ERC721A and AccessControl
+    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721A, AccessControl) returns (bool) {
+        return super.supportsInterface(interfaceId);
+    }
+
     //new
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
