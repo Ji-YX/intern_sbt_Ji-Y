@@ -16,25 +16,13 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  */
 module.exports = {
   solidity: "0.8.4",
-  defaultNetwork: "goerli",
-  networks: {
-    goerli: {
-      url: process.env.GOERLI_ALCHEMY_URL,
-      accounts: [process.env.PRIVATE_KEY],
-    },
-    mainnet: {
-      url: process.env.MAINNET_ALCHEMY_URL,
-      accounts: [process.env.PRIVATE_KEY],
-    },
-    polygonMumbai: {
-      url: process.env.MUMBAI_ALCHEMY_URL,
-      accounts: [process.env.PRIVATE_KEY],
-    },
-    polygon: {
-      url: process.env.POLYGON_ALCHEMY_URL,
-      accounts: [process.env.PRIVATE_KEY],
-    },
-  },
+  // defaultNetwork: "goerli",
+  // networks: {
+  //   goerli: {
+  //     url: "https://eth-goerli.g.alchemy.com/v2/3r1WHK6WEFFVGP2wa8UZyufAp1JEIpFW",
+  //     accounts:["0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e"],
+  //   },
+  // },
   etherscan: {
     apiKey: {
       goerli: process.env.ETHERSCAN_API_TOKEN,
