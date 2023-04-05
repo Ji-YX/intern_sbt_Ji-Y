@@ -85,8 +85,7 @@ contract SharedNFT is ERC721A, Ownable, AccessControl {
         string memory _description,
         address[] memory _toAddresses,
         string[] memory _imageURIs,
-        string[] memory _externalURIs,
-        address _mintedBy
+        string[] memory _externalURIs
     ) public onlyMinter {
         uint256 requestNum = _toAddresses.length;
         require(requestNum > 0, "The _toAddresses is empty.");
@@ -125,7 +124,7 @@ contract SharedNFT is ERC721A, Ownable, AccessControl {
             //NEW
             mintedTokens[tokenId] = TokenData({
                 owner: _toAddresses[i],
-                mintedBy : _mintedBy
+                mintedBy : msg.sender
             });
             // transfer to the specified address
             safeTransferFrom(owner(), _toAddresses[i], tokenId);
