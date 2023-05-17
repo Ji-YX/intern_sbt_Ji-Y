@@ -101,6 +101,13 @@ contract SharedNFT is ERC721A, Ownable, AccessControl {
             requestNum == _externalURIs.length,
             "The length of _toAddresses and _externalURIs are NOT same."
         );
+        for (uint i = 0; i < _toAddresses.length; i++){
+            require(
+                0 == balanceOf(_toAddresses[i]),
+                "The balanceOf some addresses is NOT zero."
+            // できれば、何番目のアドレスが NFTを１枚以上保有しているのか、失敗したかも表示したい。
+            );
+        }
         for (uint i = 0; i < requestNum; i++) {
             address _to = _toAddresses[i];
             bool hasCredential = _credentialOwnerships[_credentialId][_to];
@@ -207,6 +214,10 @@ contract SharedNFT is ERC721A, Ownable, AccessControl {
         // because to make sure that the status of credential ID mappings will not be complicated.
         require(balanceOf(newOwner) == 0, "newOwner's balance must be zero.");
         super.transferOwnership(newOwner);
+    }
+
+    function myBalanceOf(address Owner) public view returns (uint256) {
+        return balanceOf(Owner);
     }
 
     // function getMintedBy(uint256 _tokenId) 

@@ -21,7 +21,13 @@ const main = async () => {
   // const maxBatchSize =  await getMaxBatchSize.wait();
   console.log("MaxBatchSize is :", maxBatchSize.toString());
 
+  addr1_balance = await nftContract.myBalanceOf(addr1.address);
+  console.log("The balanceOf ", addr1.address.toString(),  " : ", addr1_balance.toString());
+  addr2_balance = await nftContract.myBalanceOf(addr2.address);
+  console.log("The balanceOf ", addr2.address.toString(),  " : ", addr2_balance.toString());
 
+
+  /*
   let txn = await nftContract.mintAndTransfer(
     "12345",
     "My MyNFT - Test",
@@ -32,6 +38,7 @@ const main = async () => {
   // console.log("Successed in mitAndTranser (BEFORE await)")
   await txn.wait();
 
+  console.log("Finished first mint");
   
 
   txn = await nftContract.mintAndTransfer(
@@ -43,6 +50,8 @@ const main = async () => {
   );
   await txn.wait();
 
+  console.log("Finished 2nd mint");
+*/
   txn = await nftContract.mintAndTransfer(
     "12347",
     "My MyNFT - Test",
@@ -51,7 +60,13 @@ const main = async () => {
     ["https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png", "https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png"],
   );
   await txn.wait();
-  // console.log("Successed in Mint")
+  console.log("Successed in 3rd Mint")
+
+  addr1_balance = await nftContract.myBalanceOf(addr1.address);
+  console.log("The balanceOf ", addr1.address.toString(),  " : ", addr1_balance.toString());
+  addr2_balance = await nftContract.myBalanceOf(addr2.address);
+  console.log("The balanceOf ", addr2.address.toString(),  " : ", addr2_balance.toString());
+
 
   //grantmintrole
 
@@ -63,11 +78,11 @@ const main = async () => {
   // )
   // await transferFrom.wait();
 
-  let transferOwnership = await nftContract.transferOwnership(
-    addr2.address.toString(),
-  );
+  // let transferOwnership = await nftContract.transferOwnership(
+  //   addr2.address.toString(),
+  // );
 
-  await transferOwnership.wait();
+  // await transferOwnership.wait();
 };
 // エラー処理を行っています。
 const runMain = async () => {
