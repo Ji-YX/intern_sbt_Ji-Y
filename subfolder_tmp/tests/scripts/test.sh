@@ -1,0 +1,10 @@
+# npx hardhat run SharedNFT-test1.js;
+# npx hardhat run SharedNFT-test2.js;
+# npx hardhat run SharedNFT-test3.js;
+# npx hardhat run SharedNFT-test5.js;
+# npx hardhat run SharedNFT-test6.js;
+# npx hardhat run SharedNFT-test7.js;
+# npx hardhat run SharedNFT-test8.js;
+# npx hardhat run SharedNFT-test9.js;
+# npx hardhat run SharedNFT-test10.js;
+npx hardhat run SharedNFT-test11.js;

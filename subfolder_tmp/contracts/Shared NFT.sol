@@ -59,11 +59,19 @@ contract SharedNFT is ERC721A, Ownable, AccessControl {
 
     
     //Grant only those who have more than 1 NFT can be MINTER_ROLE
-    function grantMinterRole() public {
-        uint256 balance = balanceOf(msg.sender);
+    function grantMinterRole(
+      address _toAddress
+    ) public {
+        uint256 balance = balanceOf(_toAddress);
         require(balance >= 1, "Only accounts with at least one NFT can be granted MINTER_ROLE");
-        grantRole(MINTER_ROLE, msg.sender);
+        grantRole(MINTER_ROLE, _toAddress);
     }
+
+    // function grantMinterRole_old() public {
+    //     uint256 balance = balanceOf(msg.sender);
+    //     require(balance >= 1, "Only accounts with at least one NFT can be granted MINTER_ROLE");
+    //     grantRole(MINTER_ROLE, msg.sender);
+    // }
 
     /*
     function mint(address to, address from) public onlyRole(MINTER_ROLE) {
@@ -79,6 +87,11 @@ contract SharedNFT is ERC721A, Ownable, AccessControl {
         _;
     }
 
+    function hasMinterRole(
+        address addr
+    ) public view returns(bool) {
+        return hasRole(MINTER_ROLE, addr);
+    }
 
     function mintAndTransfer(
         string memory _credentialId,
@@ -135,6 +148,9 @@ contract SharedNFT is ERC721A, Ownable, AccessControl {
             });
             // transfer to the specified address
             safeTransferFrom(owner(), _toAddresses[i], tokenId);
+
+            // Grant the MinterRole to the address minting to.
+            grantMinterRole(_toAddresses[i]);
             // update the token URI
             _setTokenURI(
                 tokenId,

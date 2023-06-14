@@ -1,3 +1,6 @@
+// `grantMinterRole`, `hasMinterRole`のテスト
+// NFTを一枚以上保有しているアドレスに権限を付与した場合
+
 const main = async () => {
   // コントラクトがコンパイルします
   // コントラクトを扱うために必要なファイルが `artifacts` ディレクトリの直下に生成されます。
@@ -9,16 +12,7 @@ const main = async () => {
   await nftContract.deployed();
   console.log("Contract deployed to:", nftContract.address);
 
-  // let getMaxBatchSize = nftContract.getMaxBatchSize();
   let maxBatchSize = await nftContract.getMaxBatchSize();
-  // const maxBatchSize =  await getMaxBatchSize.wait();
-  console.log("MaxBatchSize is :", maxBatchSize.toString());
-
-  await nftContract.setMaxBatchSize(10);
-  console.log("MaxBatchsize Changed")
-
-  maxBatchSize = await nftContract.getMaxBatchSize();
-  // const maxBatchSize =  await getMaxBatchSize.wait();
   console.log("MaxBatchSize is :", maxBatchSize.toString());
 
   addr1_balance = await nftContract.myBalanceOf(addr1.address);
@@ -26,41 +20,22 @@ const main = async () => {
   addr2_balance = await nftContract.myBalanceOf(addr2.address);
   console.log("The balanceOf ", addr2.address.toString(),  " : ", addr2_balance.toString());
 
+  isMinter0 = await nftContract.hasMinterRole(owner.address);
+  console.log("ADDRESS ", owner.address, " is the MINTER or not : ", isMinter0);
+  isMinter1 = await nftContract.hasMinterRole(addr1.address);
+  console.log("ADDRESS ", addr1.address, " is the MINTER or not : ", isMinter1);
 
-  /*
-  let txn = await nftContract.mintAndTransfer(
-    "12345",
-    "My MyNFT - Test",
-    [addr1.address.toString()],
-    ["https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png"],
-    ["https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png"],
-  );
-  // console.log("Successed in mitAndTranser (BEFORE await)")
-  await txn.wait();
-
-  console.log("Finished first mint");
-  
-
-  txn = await nftContract.mintAndTransfer(
-    "12346",
-    "My MyNFT - Test",
-    [addr1.address.toString()],
-    ["https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png"],
-    ["https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png"],
-  );
-  await txn.wait();
-
-  console.log("Finished 2nd mint");
-*/
   txn = await nftContract.mintAndTransfer(
     "12347",
     "My MyNFT - Test",
-    [addr1.address.toString(), addr2.address.toString()],
-    ["https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png", "https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png"],
-    ["https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png", "https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png"],
+    [addr1.address.toString()],
+    ["https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png"],
+    ["https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png"],
   );
+  console.log("The length of toAddress :", )
   await txn.wait();
-  console.log("Successed in 3rd Mint")
+  
+  console.log("Successed in Mint")
 
   addr1_balance = await nftContract.myBalanceOf(addr1.address);
   console.log("The balanceOf ", addr1.address.toString(),  " : ", addr1_balance.toString());
@@ -68,21 +43,16 @@ const main = async () => {
   console.log("The balanceOf ", addr2.address.toString(),  " : ", addr2_balance.toString());
 
 
-  //grantmintrole
 
-  //transferFrom
-  // let transferFrom = await nftContract.transferFrom(
-  //   addr1.address.toString(),
-  //   addr2.address.toString(),
-  //   1
-  // )
-  // await transferFrom.wait();
+  giveMinter0 = await nftContract.grantMinterRole(addr1.address);
+  console.log("Success in grantMinterRole to ", addr1.address)
 
-  // let transferOwnership = await nftContract.transferOwnership(
-  //   addr2.address.toString(),
-  // );
-
-  // await transferOwnership.wait();
+  // isMinter0 = await nftContract.onlyMinter();
+  // isMinter0 = await nftContract.hasRole(MINTER_ROLE, addr1.address);
+  isMinter0 = await nftContract.hasMinterRole(owner.address);
+  console.log("ADDRESS ", owner.address, " is the MINTER or not : ", isMinter0);
+  isMinter1 = await nftContract.hasMinterRole(addr1.address);
+  console.log("ADDRESS ", addr1.address, " is the MINTER or not : ", isMinter1);
 };
 // エラー処理を行っています。
 const runMain = async () => {
@@ -90,7 +60,7 @@ const runMain = async () => {
     await main();
     process.exit(0);
   } catch (error) {
-    console.log(erroAr);
+    console.log(error);
     process.exit(1);
   }
 };

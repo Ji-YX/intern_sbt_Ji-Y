@@ -1,3 +1,5 @@
+// _toAddressと、_externalsの要素数が異なっている場合 - Error will occur
+
 const main = async () => {
   // コントラクトがコンパイルします
   // コントラクトを扱うために必要なファイルが `artifacts` ディレクトリの直下に生成されます。
@@ -26,63 +28,20 @@ const main = async () => {
   addr2_balance = await nftContract.myBalanceOf(addr2.address);
   console.log("The balanceOf ", addr2.address.toString(),  " : ", addr2_balance.toString());
 
-
-  /*
-  let txn = await nftContract.mintAndTransfer(
-    "12345",
-    "My MyNFT - Test",
-    [addr1.address.toString()],
-    ["https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png"],
-    ["https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png"],
-  );
-  // console.log("Successed in mitAndTranser (BEFORE await)")
-  await txn.wait();
-
-  console.log("Finished first mint");
-  
-
-  txn = await nftContract.mintAndTransfer(
-    "12346",
-    "My MyNFT - Test",
-    [addr1.address.toString()],
-    ["https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png"],
-    ["https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png"],
-  );
-  await txn.wait();
-
-  console.log("Finished 2nd mint");
-*/
   txn = await nftContract.mintAndTransfer(
     "12347",
     "My MyNFT - Test",
     [addr1.address.toString(), addr2.address.toString()],
     ["https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png", "https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png"],
-    ["https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png", "https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png"],
+    ["https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png"],
   );
   await txn.wait();
-  console.log("Successed in 3rd Mint")
+  console.log("Successed in Mint")
 
   addr1_balance = await nftContract.myBalanceOf(addr1.address);
   console.log("The balanceOf ", addr1.address.toString(),  " : ", addr1_balance.toString());
   addr2_balance = await nftContract.myBalanceOf(addr2.address);
   console.log("The balanceOf ", addr2.address.toString(),  " : ", addr2_balance.toString());
-
-
-  //grantmintrole
-
-  //transferFrom
-  // let transferFrom = await nftContract.transferFrom(
-  //   addr1.address.toString(),
-  //   addr2.address.toString(),
-  //   1
-  // )
-  // await transferFrom.wait();
-
-  // let transferOwnership = await nftContract.transferOwnership(
-  //   addr2.address.toString(),
-  // );
-
-  // await transferOwnership.wait();
 };
 // エラー処理を行っています。
 const runMain = async () => {
@@ -90,7 +49,7 @@ const runMain = async () => {
     await main();
     process.exit(0);
   } catch (error) {
-    console.log(erroAr);
+    console.log(error);
     process.exit(1);
   }
 };

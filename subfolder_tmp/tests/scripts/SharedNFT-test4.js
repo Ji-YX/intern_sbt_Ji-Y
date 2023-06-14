@@ -1,7 +1,9 @@
+// 既に存在する`_credentialId`を用いてミントを行う 
+
 const main = async () => {
   // コントラクトがコンパイルします
   // コントラクトを扱うために必要なファイルが `artifacts` ディレクトリの直下に生成されます。
-  [owner, addr1, addr2] = await hre.ethers.getSigners(); //秘密鍵の作成
+  [owner, addr1, addr2, addr3, addr4] = await hre.ethers.getSigners(); //秘密鍵の作成
   const nftContractFactory = await hre.ethers.getContractFactory("SharedNFT", owner);
   // Hardhat がローカルの Ethereum ネットワークを作成します。
   const nftContract = await nftContractFactory.deploy("My NFT", "NFT", 1);
@@ -25,33 +27,11 @@ const main = async () => {
   console.log("The balanceOf ", addr1.address.toString(),  " : ", addr1_balance.toString());
   addr2_balance = await nftContract.myBalanceOf(addr2.address);
   console.log("The balanceOf ", addr2.address.toString(),  " : ", addr2_balance.toString());
+  addr3_balance = await nftContract.myBalanceOf(addr3.address);
+  console.log("The balanceOf ", addr3.address.toString(),  " : ", addr3_balance.toString());
+  addr4_balance = await nftContract.myBalanceOf(addr4.address);
+  console.log("The balanceOf ", addr4.address.toString(),  " : ", addr4_balance.toString());
 
-
-  /*
-  let txn = await nftContract.mintAndTransfer(
-    "12345",
-    "My MyNFT - Test",
-    [addr1.address.toString()],
-    ["https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png"],
-    ["https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png"],
-  );
-  // console.log("Successed in mitAndTranser (BEFORE await)")
-  await txn.wait();
-
-  console.log("Finished first mint");
-  
-
-  txn = await nftContract.mintAndTransfer(
-    "12346",
-    "My MyNFT - Test",
-    [addr1.address.toString()],
-    ["https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png"],
-    ["https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png"],
-  );
-  await txn.wait();
-
-  console.log("Finished 2nd mint");
-*/
   txn = await nftContract.mintAndTransfer(
     "12347",
     "My MyNFT - Test",
@@ -60,37 +40,44 @@ const main = async () => {
     ["https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png", "https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png"],
   );
   await txn.wait();
-  console.log("Successed in 3rd Mint")
+  console.log("Successed in 1st Mint");
+
+  addr1_balance = await nftContract.myBalanceOf(addr1.address);
+  console.log("The balanceOF ", addr1.address.toString(), " : ", addr1_balance.toString());
+  addr2_balance = await nftContract.myBalanceOf(addr2.address);
+  console.log("The balanceOF ", addr2.address.toString(), " : ", addr2_balance.toString());
+  addr3_balance = await nftContract.myBalanceOf(addr3.address);
+  console.log("The balanceOf ", addr3.address.toString(),  " : ", addr3_balance.toString());
+  addr4_balance = await nftContract.myBalanceOf(addr4.address);
+  console.log("The balanceOf ", addr4.address.toString(),  " : ", addr4_balance.toString());
+
+  txn2 = await nftContract.mintAndTransfer(
+    "12347",
+    "My MyNFT - Test",
+    [addr3.address.toString()],
+    ["https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png"],
+    ["https://bafybeicbpeabzshnvxssrzyzup2vzhn6wtawksbnozq6q5avdfbi4vn6e4.ipfs.w3s.link/output1-15.png"],
+  );
+  await txn2.wait();
+  console.log("Successed in 2nd Mint");
 
   addr1_balance = await nftContract.myBalanceOf(addr1.address);
   console.log("The balanceOf ", addr1.address.toString(),  " : ", addr1_balance.toString());
   addr2_balance = await nftContract.myBalanceOf(addr2.address);
   console.log("The balanceOf ", addr2.address.toString(),  " : ", addr2_balance.toString());
-
-
-  //grantmintrole
-
-  //transferFrom
-  // let transferFrom = await nftContract.transferFrom(
-  //   addr1.address.toString(),
-  //   addr2.address.toString(),
-  //   1
-  // )
-  // await transferFrom.wait();
-
-  // let transferOwnership = await nftContract.transferOwnership(
-  //   addr2.address.toString(),
-  // );
-
-  // await transferOwnership.wait();
+  addr3_balance = await nftContract.myBalanceOf(addr3.address);
+  console.log("The balanceOf ", addr3.address.toString(),  " : ", addr3_balance.toString());
+  addr4_balance = await nftContract.myBalanceOf(addr4.address);
+  console.log("The balanceOf ", addr4.address.toString(),  " : ", addr4_balance.toString());
 };
+
 // エラー処理を行っています。
 const runMain = async () => {
   try {
     await main();
     process.exit(0);
   } catch (error) {
-    console.log(erroAr);
+    console.log(error);
     process.exit(1);
   }
 };
